@@ -1,0 +1,52 @@
+@startuml buscaminas
+
+class Estado
+{
+    + Ganar
+    + Perder
+}
+class Juego
+{
+    - tiempo
+    + Puntuacion
+    + Salir
+}
+class Campo
+{
+    - minas
+    - dificultad
+    + Crear_campo
+    + Excavar
+    + Colocar
+    + Set_cuenta
+    + Get_cuenta
+}
+class Nivel
+{
+    - facil
+    - intermedio
+    - dificil
+}
+class Pixel
+{
+    + Set_tipo
+    + Get_tipo
+}
+class Tipo_pixel
+{
+    - cubierta
+    - descubierta_0
+    - descubierta_n
+    - cubierta_b_correcta
+    - mina_antes
+    - mina_despues
+    - cubierta_b_incorrecta
+}
+
+Estado "1" --* "1" Juego
+Nivel "1" *-- "1" Campo
+Juego "1" *-- "*" Campo
+Campo "1" o-- "*" Pixel
+Pixel <|-- Tipo_pixel
+
+@enduml
