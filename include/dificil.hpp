@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <C:\Users\user\Desktop\Buscaminas\include\campo.hpp>
 
 
 using namespace std;

@@ -83,9 +83,12 @@ int main()
                     {   
                         if (i == 0)
                         {
-                            Facil v;
-                            seleccion = true;
                             window.clear();
+                            cout << "seleccion" << endl;
+                            RenderWindow windowf(VideoMode(600, 600), "Facil");
+                            Facil v(windowf);
+                            v.runf();
+                            seleccion = true;
                             if(v.ventana == false)
                             {
                                 seleccion == false;
@@ -95,7 +98,6 @@ int main()
                         {
                             Inetermedio v;
                             seleccion = true;
-                            window.clear();
                             if(v.ventana == false)
                             {
                                 seleccion == false;
