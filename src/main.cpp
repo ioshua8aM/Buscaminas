@@ -1,90 +1,138 @@
 #include <SFML/Graphics.hpp>
+#include <C:\Users\user\Desktop\Buscaminas\include\facil.hpp>
+#include <C:\Users\user\Desktop\Buscaminas\include\intermedio.hpp>
+#include <C:\Users\user\Desktop\Buscaminas\include\dificil.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
 
 using namespace std;
+using namespace sf;
+
 
 int main()
 {
     // Crear un botón
-    sf::RectangleShape button(sf::Vector2f(50.f, 50.f));
+    vector<RectangleShape> botones;
 
     // Crear una ventana de SFML
-    sf::RenderWindow window(sf::VideoMode(600, 600), "SFML works!");
+    RenderWindow window(VideoMode(600, 600), "Buscaminas");
 
     // Crear opciones de menú
-    vector<string> menuOptions = {"Option 1", "Option 2", "Option 3"};
+    vector<string> Opciones = {"Option 1", "Option 2", "Option 3"};
 
-    sf::Font font;
-    if (!font.loadFromFile("include/arial.ttf"))
+    Font letra;
+    if (!letra.loadFromFile("include/arial.ttf"))
     {
         cout << "Could not load font" << endl;
         return 1;
     }
 
-    vector<sf::Text> menuTexts;
-    for (int i = 0; i < menuOptions.size(); i++)
-    {
-        sf::Text text;
-        text.setFont(font);
-        text.setString("Bienvendio a Buscaminas \n");
-        text.setCharacterSize(24);
-        text.setFillColor(sf::Color::White);
-        text.setPosition(50.f, 50.f);
-        menuTexts.push_back(text);
+    Text texto;
+    texto.setFont(letra);
+    texto.setString("Bienvendio a Buscaminas \nSelecciona una difcultad: \n\n");
+    texto.setCharacterSize(24);
+    texto.setFillColor(Color::White);
+    texto.setPosition(50.f, 50.f);
 
-        sf::Text text1;
-        text1.setFont(font);
-        text1.setString(menuOptions[i]);
-        text1.setCharacterSize(24);
-        text1.setFillColor(sf::Color::White);
-        text1.setPosition(50.f, 80.f + i * 50.f);
-        menuTexts.push_back(text1);
+    vector<Text> menu;
+    for (int i = 0; i < Opciones.size(); i++)
+    { 
+        Text texto1;
+        texto1.setFont(letra);
+        texto1.setString(Opciones[i]);
+        texto1.setCharacterSize(24);
+        texto1.setFillColor(Color::White);
+        texto1.setPosition(50.f, 120.f + i * 50.f);
+        menu.push_back(texto1);
 
-        button.setFillColor(sf::Color::Green);
-        button.setPosition(50.f, 250.f);
+        RectangleShape button(Vector2f(200.f, 50.f));
+        button.setFillColor(Color::Transparent);
+        button.setPosition(50.f, 120.f + i * 50.f);
+        botones.push_back(button);
     }
 
+    bool seleccion = false;
     while (window.isOpen())
     {
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == Event::Closed)
+            {    
                 window.close();
-        }
-
-        for (const auto &text : menuTexts)
-        {
-            window.draw(text);
-        }
-
-        if (event.type == sf::Event::MouseButtonPressed)
-        {
-            if (event.mouseButton.button == sf::Mouse::Left)
+            }
+            //Posicion del mouse
+            Vector2i mousePos = Mouse::getPosition(window);
+            
+            int x = 1, i = 0;
+            for(i ; i < botones.size(); i++)
             {
-                // mouse position (relative to window)
-                sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-                //cout << "Mouse position: " << mousePos.x << ", " << mousePos.y << endl;
-
-                if (button.getGlobalBounds().contains(mousePos.x, mousePos.y))
+                if (botones[i].getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                    button.setFillColor(sf::Color::Red);
+                     menu[i].setStyle(Text::Underlined);
                 }
                 else
                 {
-                    button.setFillColor(sf::Color::Green);
+                    menu[i].setStyle(Text::Regular);
+                }
+
+                if (event.type == Event::MouseButtonPressed)
+                {
+                    if (botones[i].getGlobalBounds().contains(mousePos.x, mousePos.y))
+                    {   
+                        if (i == 0)
+                        {
+                            Facil v;
+                            seleccion = true;
+                            window.clear();
+                            if(v.ventana == false)
+                            {
+                                seleccion == false;
+                            }
+                        }
+                        if (i == 1)
+                        {
+                            Inetermedio v;
+                            seleccion = true;
+                            window.clear();
+                            if(v.ventana == false)
+                            {
+                                seleccion == false;
+                            }
+                        }
+                        if(i == 2)
+                        {
+                            Dificil v;
+                            seleccion = true;
+                            window.clear();
+                            if(v.ventana == false)
+                            {
+                                seleccion == false;
+                            }
+                        }
+                        
+                    }
                 }
             }
         }
-        for (const auto &text : menuTexts)
+        
+        window.clear();
+
+        window.draw(texto);
+
+        for (const auto &text : menu)
         {
             window.draw(text);
         }
-        window.draw(button);
+        
         window.display();
     }
+    if (seleccion == true)
+    {
+        window.close();
+    }
+    
 
     return 0;
 }
