@@ -17,7 +17,7 @@ int main()
     RenderWindow window(VideoMode(600, 600), "Buscaminas");
 
     // Crear opciones de menú
-    vector<string> Opciones = {"Option 1", "Option 2", "Option 3"};
+    vector<string> Opciones = {"Facil", "Intermedio", "Dificil"};
 
     Font letra;
     if (!letra.loadFromFile("include/arial.ttf"))
@@ -53,10 +53,10 @@ int main()
     bool seleccion = false;
     while (window.isOpen())
     {
-        Event event;
-        while (window.pollEvent(event))
+        Event evento;
+        while (window.pollEvent(evento))
         {
-            if (event.type == Event::Closed)
+            if (evento.type == Event::Closed)
             {    
                 window.close();
             }
@@ -75,7 +75,7 @@ int main()
                     menu[i].setStyle(Text::Regular);
                 }
 
-                if (event.type == Event::MouseButtonPressed)
+                if (evento.type == Event::MouseButtonPressed)
                 {
                     if (botones[i].getGlobalBounds().contains(mousePos.x, mousePos.y))
                     {   

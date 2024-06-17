@@ -23,6 +23,9 @@ struct Celda
 class Campo
 {
 public:
+    int minast = 0, puntaje = 0;
+    bool derrota = false, victoria = false;
+    Font fuente;
     vector<vector<Celda>> tablero;
     bool ventana = true;
     Campo(int Tam, int minas, int celdas)
@@ -38,7 +41,6 @@ public:
     }
 
 private:
-    Font fuente;
 
     void inicializarTablero(int Tam, int celdas)
     {
@@ -51,7 +53,7 @@ private:
                 tablero[i][j].rect.setSize(Vector2f(celdas - 2, celdas - 2));
                 tablero[i][j].rect.setPosition(i * celdas, j * celdas);
                 tablero[i][j].rect.setFillColor(Color::Green);
-                tablero[i][j].texto.setFont(fuente); // Ensure font is loaded before this point
+                tablero[i][j].texto.setFont(fuente);
                 tablero[i][j].texto.setCharacterSize(24);
                 tablero[i][j].texto.setPosition(i * celdas, j * celdas);
             }
@@ -60,6 +62,7 @@ private:
 
     void colocarMinas(int minas, int Tam)
     {
+        minast = minas;
         int minasColocadas = 0;
         while (minasColocadas < minas)
         {
@@ -84,13 +87,27 @@ public:
     void run(int Tam, int minas, int celdas)
     {
         RenderWindow window(VideoMode(Tam * celdas, Tam * celdas), "Buscaminas SFML");
+        RenderWindow perdiste(VideoMode(400, 400), "Perdiste");
+        Text texto;
+        texto.setFont(fuente);
+        texto.setString("Perdiste");
+        texto.setCharacterSize(24);
+        texto.setFillColor(Color::White);
+        texto.setPosition(50, 50);
+        RenderWindow ganaste(VideoMode(400, 400), "Ganaste");
+        Text texto1;  
+        texto1.setFont(fuente);
+        texto1.setString("Ganaste");
+        texto1.setCharacterSize(24);
+        texto1.setFillColor(Color::White);
+        texto1.setPosition(50, 50);        
         while (window.isOpen())
         {
 
-            Event event;
-            while (window.pollEvent(event))
+            Event evento;
+            while (window.pollEvent(evento))
             {
-                if (event.type == Event::Closed)
+                if (evento.type == Event::Closed)
                 {
                     window.close();
                     ventana = false;
@@ -98,17 +115,20 @@ public:
             }
             manejarEventos(window, Tam, celdas);
 
-            window.clear();
-            for (int i = 0; i < Tam; ++i)
+            if (derrota == true)
             {
-                for (int j = 0; j < Tam; ++j)
-                {
-                    window.draw(tablero[i][j].rect);
-                    if (tablero[i][j].revelado)
-                    {
-                        window.draw(tablero[i][j].texto);
-                    }
-                }
+                perdiste.clear();
+                perdiste.draw(texto);
+                perdiste.display();
+                ventana = false;
+            }
+
+            if (victoria == true)
+            {
+                ganaste.clear();
+                ganaste.draw(texto1);
+                ganaste.display();
+                ventana = false;
             }
             window.display();
         }
@@ -122,28 +142,31 @@ public:
         if (Mouse::isButtonPressed(Mouse::Left))
         {
             revelarCelda(x, y);
-            cout << "Mouse left button pressed" << endl;
             if (tablero[x][y].derrota)
             {
-                cout << "Perdiste" << endl;
-                window.close();   
-                ventana = false; 
-            } 
-        }
+                derrota = true;
+            }
+            if (puntaje == (tablero.size()*tablero[0].size()-minast))
+            {
+                victoria = true;
+            }
+        } 
+        
         else if (Mouse::isButtonPressed(Mouse::Right))
         {
             colocarBandera(x, y);
-            cout << "Mouse right button pressed" << endl;
-        }
-        
+        }   
     }
-
 private:
     void revelarCelda(int x, int y)
     {
         if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
         {
             tablero[x][y].revelado = true;
+            if(!tablero[x][y].tieneMina)
+            {
+                puntaje++;
+            }
             int minasCerca = contarMinasCerca(x, y);
             tablero[x][y].minasCerca = minasCerca;
             if (tablero[x][y].tieneMina)
