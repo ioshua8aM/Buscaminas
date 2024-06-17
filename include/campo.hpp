@@ -123,16 +123,19 @@ public:
         {
             revelarCelda(x, y);
             cout << "Mouse left button pressed" << endl;
+            if (tablero[x][y].derrota)
+            {
+                cout << "Perdiste" << endl;
+                window.close();   
+                ventana = false; 
+            } 
         }
         else if (Mouse::isButtonPressed(Mouse::Right))
         {
             colocarBandera(x, y);
             cout << "Mouse right button pressed" << endl;
         }
-        if (tablero[x][y].derrota)
-        {
-            cout << "Perdiste" << endl;
-        }
+        
     }
 
 private:
@@ -140,45 +143,44 @@ private:
     {
         if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
         {
-            cout << "Mina revelada" << endl;
             tablero[x][y].revelado = true;
-            // Actualizar el texto de la celda si tiene minas cerca o es una mina
+            int minasCerca = contarMinasCerca(x, y);
+            tablero[x][y].minasCerca = minasCerca;
             if (tablero[x][y].tieneMina)
             {
                 tablero[x][y].derrota = true;
                 tablero[x][y].texto.setString("M");
                 tablero[x][y].rect.setFillColor(Color::Red);
             }
+            else if(minasCerca > 0)
+            {
+                tablero[x][y].texto.setString(to_string(minasCerca));
+                tablero[x][y].texto.setFillColor(Color::Black);
+                tablero[x][y].rect.setFillColor(Color::Yellow);
+            }
             else
             {
-                int minasCerca = contarMinasCerca(x, y);
-                tablero[x][y].minasCerca = minasCerca;
-                if (minasCerca > 0)
+                tablero[x][y].rect.setFillColor(Color::White);
+                for (int dx = -1; dx <= 1; dx++)
                 {
-                    tablero[x][y].texto.setString(to_string(minasCerca));
-                    tablero[x][y].texto.setFillColor(Color::Black);
-                    tablero[x][y].rect.setFillColor(Color::White);
-                }
-                else
-                {
-                    for (int x1 = -1; x1 <= 1; x1++)
+                    for (int dy = -1; dy <= 1; dy++)
                     {
-                        for (int y1= -1; y1 <= 1; y1++)
+                        if (dx == 0 && dy == 0)
                         {
-                            if(x1 == 0 && y1 == 0)
-                            {
-                                if(x + x1 >= 0 && x + x1 < tablero.size() && y + y1 >= 0 && y + y1 < tablero[0].size())
-                                {
-                                revelarCelda(x + x1, y + y1);
-                                tablero[x + x1][y + y1].rect.setFillColor(Color::Transparent);
-                                }
-                            }
+                        continue;
+                        }
+                        int nx = x + dx;
+                        int ny = y + dy;
+                        if (nx >= 0 && nx < tablero.size() && ny >= 0 && ny < tablero[0].size())
+                        {
+                            revelarCelda(nx, ny);
                         }
                     }
                 }
             }
         }
     }
+
     void colocarBandera(int x, int y)
     {
         if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
