@@ -82,9 +82,9 @@ int main()
                         if (i == 0)
                         {
                             window.clear();
-                            cout << "seleccion" << endl;
+                            Juego juego(10, 10, 60);
                             Campo campo(10, 10, 60);
-                            campo.run(10, 60); 
+                            juego.run(10, 10, 60);
                             seleccion = true;
                             if(campo.ventana == false)
                             {
@@ -93,8 +93,9 @@ int main()
                         }
                         if (i == 1)
                         {
+                            Juego juego(20, 40, 30);
                             Campo campo(20, 40, 30);
-                            campo.run(20, 30);
+                            juego.run(20, 40, 30);
                             seleccion = true;
                             if(campo.ventana == false)
                             {
@@ -103,8 +104,9 @@ int main()
                         }
                         if(i == 2)
                         {
-                            Campo campo (30, 60, 15);
-                            campo.run(30, 15);
+                            Juego juego(30, 60, 20);
+                            Campo campo (30, 60, 20);
+                            juego.run(30, 60, 20);
                             seleccion = true;
                             window.clear();
                             if(campo.ventana == false)

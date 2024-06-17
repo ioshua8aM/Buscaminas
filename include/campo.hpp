@@ -4,67 +4,49 @@
 #include <cstdlib>
 #include <ctime>
 #include <stdexcept>
+#include <iostream>
 
 using namespace sf;
 using namespace std;
 
-const int CELDA = 60; // Tamaño de cada celda en píxeles
 
-struct Celda {
+struct Celda
+{
     RectangleShape rect;
     Text texto;
     bool tieneMina = false;
     bool revelado = false;
     int minasCerca = 0;
+    bool derrota = false;
 };
 
-class Campo {
+class Campo
+{
 public:
+    vector<vector<Celda>> tablero;
     bool ventana = true;
-    Campo(int Tam, int minas, int celdas) {
-        srand(time(0)); // Correct usage for basic randomness
-        if (!fuente.loadFromFile("include/arial.ttf")) {
-            // Ensure the path is correct and accessible
+    Campo(int Tam, int minas, int celdas)
+    {
+        srand(time(0));
+        if (!fuente.loadFromFile("include/arial.ttf"))
+        {
+            
             throw runtime_error("Error al cargar la fuente");
         }
         inicializarTablero(Tam, celdas);
-        colocarMinas(minas, Tam); // Ensure parameters are in the correct order
-    }
-
-    void run(int Tam, int celdas) {
-        RenderWindow window(VideoMode(Tam * celdas, Tam * celdas), "Buscaminas SFML");
-        while (window.isOpen()) {
-            Event event;
-            while (window.pollEvent(event)) {
-                if (event.type == Event::Closed)
-                {
-                    window.close();
-                    ventana = false;
-                }
-            }
-
-            window.clear();
-            for (int i = 0; i < Tam; ++i) {
-                for (int j = 0; j < Tam; ++j) {
-                    window.draw(tablero[i][j].rect);
-                    if (tablero[i][j].revelado) {
-                        window.draw(tablero[i][j].texto);
-                    }
-                }
-            }
-            window.display();
-        }
+        colocarMinas(minas, Tam);
     }
 
 private:
-
-    vector<vector<Celda>> tablero;
     Font fuente;
 
-    void inicializarTablero(int Tam, int celdas) {
+    void inicializarTablero(int Tam, int celdas)
+    {
         tablero.resize(Tam, vector<Celda>(Tam));
-        for (int i = 0; i < Tam; ++i) {
-            for (int j = 0; j < Tam; ++j) {
+        for (int i = 0; i < Tam; ++i)
+        {
+            for (int j = 0; j < Tam; ++j)
+            {
                 // Proper initialization of SFML objects
                 tablero[i][j].rect.setSize(Vector2f(celdas - 2, celdas - 2));
                 tablero[i][j].rect.setPosition(i * celdas, j * celdas);
@@ -76,15 +58,154 @@ private:
         }
     }
 
-    void colocarMinas(int minas, int Tam) {
+    void colocarMinas(int minas, int Tam)
+    {
         int minasColocadas = 0;
-        while (minasColocadas < minas) {
+        while (minasColocadas < minas)
+        {
             int x = rand() % Tam;
             int y = rand() % Tam;
-            if (!tablero[x][y].tieneMina) {
+            if (!tablero[x][y].tieneMina)
+            {
                 tablero[x][y].tieneMina = true;
                 ++minasColocadas;
             }
         }
+    }
+};
+
+class Juego : public Campo
+{
+public:
+    Juego(int Tam, int minas, int celdas) : Campo(Tam, minas, celdas)
+    {
+    }
+
+    void run(int Tam, int minas, int celdas)
+    {
+        RenderWindow window(VideoMode(Tam * celdas, Tam * celdas), "Buscaminas SFML");
+        while (window.isOpen())
+        {
+
+            Event event;
+            while (window.pollEvent(event))
+            {
+                if (event.type == Event::Closed)
+                {
+                    window.close();
+                    ventana = false;
+                }
+            }
+            manejarEventos(window, Tam, celdas);
+
+            window.clear();
+            for (int i = 0; i < Tam; ++i)
+            {
+                for (int j = 0; j < Tam; ++j)
+                {
+                    window.draw(tablero[i][j].rect);
+                    if (tablero[i][j].revelado)
+                    {
+                        window.draw(tablero[i][j].texto);
+                    }
+                }
+            }
+            window.display();
+        }
+    }
+
+    void manejarEventos(RenderWindow &window, int Tam, int celdas)
+    {
+        Vector2i pos = Mouse::getPosition(window);
+        int x = pos.x / celdas;
+        int y = pos.y / celdas;
+        if (Mouse::isButtonPressed(Mouse::Left))
+        {
+            revelarCelda(x, y);
+            cout << "Mouse left button pressed" << endl;
+        }
+        else if (Mouse::isButtonPressed(Mouse::Right))
+        {
+            colocarBandera(x, y);
+            cout << "Mouse right button pressed" << endl;
+        }
+        if (tablero[x][y].derrota)
+        {
+            cout << "Perdiste" << endl;
+        }
+    }
+
+private:
+    void revelarCelda(int x, int y)
+    {
+        if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
+        {
+            cout << "Mina revelada" << endl;
+            tablero[x][y].revelado = true;
+            // Actualizar el texto de la celda si tiene minas cerca o es una mina
+            if (tablero[x][y].tieneMina)
+            {
+                tablero[x][y].derrota = true;
+                tablero[x][y].texto.setString("M");
+                tablero[x][y].rect.setFillColor(Color::Red);
+            }
+            else
+            {
+                int minasCerca = contarMinasCerca(x, y);
+                tablero[x][y].minasCerca = minasCerca;
+                if (minasCerca > 0)
+                {
+                    tablero[x][y].texto.setString(to_string(minasCerca));
+                    tablero[x][y].texto.setFillColor(Color::Black);
+                    tablero[x][y].rect.setFillColor(Color::White);
+                }
+                else
+                {
+                    for (int x1 = -1; x1 <= 1; x1++)
+                    {
+                        for (int y1= -1; y1 <= 1; y1++)
+                        {
+                            if(x1 == 0 && y1 == 0)
+                            {
+                                if(x + x1 >= 0 && x + x1 < tablero.size() && y + y1 >= 0 && y + y1 < tablero[0].size())
+                                {
+                                revelarCelda(x + x1, y + y1);
+                                tablero[x + x1][y + y1].rect.setFillColor(Color::Transparent);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    void colocarBandera(int x, int y)
+    {
+        if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
+        {
+            // Simplemente cambiamos el color para indicar una bandera, en un juego real se debería gestionar mejor
+            tablero[x][y].rect.setFillColor(Color::Red);
+        }
+    }
+
+    int contarMinasCerca(int x, int y)
+    {
+        int cuenta = 0;
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int nx = x + i;
+                int ny = y + j;
+                if (nx >= 0 && nx < tablero.size() && ny >= 0 && ny < tablero[0].size())
+                {
+                    if (tablero[nx][ny].tieneMina)
+                    {
+                        cuenta++;
+                    }
+                }
+            }
+        }
+        return cuenta;
     }
 };
