@@ -1,7 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <C:\Users\user\Desktop\Buscaminas\include\facil.hpp>
-#include <C:\Users\user\Desktop\Buscaminas\include\intermedio.hpp>
-#include <C:\Users\user\Desktop\Buscaminas\include\dificil.hpp>
+#include <C:\Users\user\Desktop\Buscaminas\include\campo.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -85,30 +83,31 @@ int main()
                         {
                             window.clear();
                             cout << "seleccion" << endl;
-                            RenderWindow windowf(VideoMode(600, 600), "Facil");
-                            Facil v(windowf);
-                            v.runf();
+                            Campo campo(10, 10, 60);
+                            campo.run(10, 60); 
                             seleccion = true;
-                            if(v.ventana == false)
+                            if(campo.ventana == false)
                             {
                                 seleccion == false;
                             }
                         }
                         if (i == 1)
                         {
-                            Inetermedio v;
+                            Campo campo(20, 40, 30);
+                            campo.run(20, 30);
                             seleccion = true;
-                            if(v.ventana == false)
+                            if(campo.ventana == false)
                             {
                                 seleccion == false;
                             }
                         }
                         if(i == 2)
                         {
-                            Dificil v;
+                            Campo campo (30, 60, 15);
+                            campo.run(30, 15);
                             seleccion = true;
                             window.clear();
-                            if(v.ventana == false)
+                            if(campo.ventana == false)
                             {
                                 seleccion == false;
                             }
