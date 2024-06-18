@@ -17,14 +17,13 @@ struct Celda
     bool tieneMina = false;
     bool revelado = false;
     int minasCerca = 0;
-    bool derrota = false;
 };
 
 class Campo
 {
 public:
+    bool ganar = false, perder = false;
     int minast = 0, puntaje = 0;
-    bool derrota = false, victoria = false;
     Font fuente;
     vector<vector<Celda>> tablero;
     bool ventana = true;
@@ -87,20 +86,6 @@ public:
     void run(int Tam, int minas, int celdas)
     {
         RenderWindow window(VideoMode(Tam * celdas, Tam * celdas), "Buscaminas SFML");
-        RenderWindow perdiste(VideoMode(400, 400), "Perdiste");
-        Text texto;
-        texto.setFont(fuente);
-        texto.setString("Perdiste");
-        texto.setCharacterSize(24);
-        texto.setFillColor(Color::White);
-        texto.setPosition(50, 50);
-        RenderWindow ganaste(VideoMode(400, 400), "Ganaste");
-        Text texto1;  
-        texto1.setFont(fuente);
-        texto1.setString("Ganaste");
-        texto1.setCharacterSize(24);
-        texto1.setFillColor(Color::White);
-        texto1.setPosition(50, 50);        
         while (window.isOpen())
         {
 
@@ -112,46 +97,48 @@ public:
                     window.close();
                     ventana = false;
                 }
+                else if(evento.type == Event::MouseButtonPressed)
+                {
+                manejarEventos(window, Tam, celdas);
+                }
             }
-            manejarEventos(window, Tam, celdas);
-
-            if (derrota == true)
+            window.clear();
+            for (int i = 0; i <tablero.size(); i++)
             {
-                perdiste.clear();
-                perdiste.draw(texto);
-                perdiste.display();
-                ventana = false;
-            }
-
-            if (victoria == true)
-            {
-                ganaste.clear();
-                ganaste.draw(texto1);
-                ganaste.display();
-                ventana = false;
+                for (int j = 0; j<tablero[i].size(); j++)
+                {
+                    window.draw(tablero[i][j].rect);
+                    window.draw(tablero[i][j].texto);
+                }
             }
             window.display();
+            if (ganar || perder)
+            {
+                RenderWindow estado(VideoMode(200,200), ganar ? "Ganaste":"Perdiste");
+                Event estado1;
+                while (estado.pollEvent(estado1))
+                {
+                    if(estado1.type == Event::Closed || estado1.type == Event::MouseButtonPressed)
+                    {
+                        estado.close();
+                        window.close();
+                    }
+                }
+                estado.clear();
+                estado.display();
+            }
         }
     }
-
     void manejarEventos(RenderWindow &window, int Tam, int celdas)
     {
+        
         Vector2i pos = Mouse::getPosition(window);
         int x = pos.x / celdas;
         int y = pos.y / celdas;
         if (Mouse::isButtonPressed(Mouse::Left))
         {
             revelarCelda(x, y);
-            if (tablero[x][y].derrota)
-            {
-                derrota = true;
-            }
-            if (puntaje == (tablero.size()*tablero[0].size()-minast))
-            {
-                victoria = true;
-            }
         } 
-        
         else if (Mouse::isButtonPressed(Mouse::Right))
         {
             colocarBandera(x, y);
@@ -166,14 +153,20 @@ private:
             if(!tablero[x][y].tieneMina)
             {
                 puntaje++;
+                int celdasTotales = tablero.size()*tablero[0].size();
+                if (puntaje + minast == celdasTotales)
+                {
+                    cout << "Ganaste";
+                    ganar = true;
+                }
             }
             int minasCerca = contarMinasCerca(x, y);
             tablero[x][y].minasCerca = minasCerca;
             if (tablero[x][y].tieneMina)
             {
-                tablero[x][y].derrota = true;
                 tablero[x][y].texto.setString("M");
                 tablero[x][y].rect.setFillColor(Color::Red);
+                perder = true;
             }
             else if(minasCerca > 0)
             {
@@ -208,7 +201,6 @@ private:
     {
         if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
         {
-            // Simplemente cambiamos el color para indicar una bandera, en un juego real se debería gestionar mejor
             tablero[x][y].rect.setFillColor(Color::Red);
         }
     }

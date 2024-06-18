@@ -86,9 +86,9 @@ int main()
                             Campo campo(10, 10, 60);
                             juego.run(10, 10, 60);
                             seleccion = true;
-                            if(campo.ventana == false)
+                            if (campo.ventana == false)
                             {
-                                seleccion == false;
+                                seleccion = false;
                             }
                         }
                         if (i == 1)
