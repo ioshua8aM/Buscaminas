@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
-#include <C:\Users\user\Desktop\Buscaminas\include\campo.hpp>
+#include <Campo.hpp>
+#include <Dificultad.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
 
 using namespace std;
 using namespace sf;
-
 
 int main()
 {
@@ -20,7 +20,7 @@ int main()
     vector<string> Opciones = {"Facil", "Intermedio", "Dificil"};
 
     Font letra;
-    if (!letra.loadFromFile("include/arial.ttf"))
+    if (!letra.loadFromFile("assets/fonts/arial.ttf"))
     {
         cout << "Could not load font" << endl;
         return 1;
@@ -35,7 +35,7 @@ int main()
 
     vector<Text> menu;
     for (int i = 0; i < Opciones.size(); i++)
-    { 
+    {
         Text texto1;
         texto1.setFont(letra);
         texto1.setString(Opciones[i]);
@@ -57,18 +57,18 @@ int main()
         while (window.pollEvent(evento))
         {
             if (evento.type == Event::Closed)
-            {    
+            {
                 window.close();
             }
-            //Posicion del mouse
+            // Posicion del mouse
             Vector2i mousePos = Mouse::getPosition(window);
-            
+
             int x = 1, i = 0;
-            for(i ; i < botones.size(); i++)
+            for (i; i < botones.size(); i++)
             {
                 if (botones[i].getGlobalBounds().contains(mousePos.x, mousePos.y))
                 {
-                     menu[i].setStyle(Text::Underlined);
+                    menu[i].setStyle(Text::Underlined);
                 }
                 else
                 {
@@ -78,48 +78,28 @@ int main()
                 if (evento.type == Event::MouseButtonPressed)
                 {
                     if (botones[i].getGlobalBounds().contains(mousePos.x, mousePos.y))
-                    {   
+                    {
                         if (i == 0)
                         {
-                            window.clear();
-                            Juego juego(10, 10, 60);
-                            Campo campo(10, 10, 60);
-                            juego.run(10, 10, 60);
+                            Dificultad facil(10, 10, 60);
                             seleccion = true;
-                            if (campo.ventana == false)
-                            {
-                                seleccion = false;
-                            }
+
                         }
                         if (i == 1)
                         {
-                            Juego juego(20, 40, 30);
-                            Campo campo(20, 40, 30);
-                            juego.run(20, 40, 30);
+                            Dificultad intermedio(20, 40, 30);
                             seleccion = true;
-                            if(campo.ventana == false)
-                            {
-                                seleccion == false;
-                            }
                         }
-                        if(i == 2)
+                        if (i == 2)
                         {
-                            Juego juego(30, 60, 20);
-                            Campo campo (30, 60, 20);
-                            juego.run(30, 60, 20);
+                            Dificultad dificil(30, 100, 10);
                             seleccion = true;
-                            window.clear();
-                            if(campo.ventana == false)
-                            {
-                                seleccion == false;
-                            }
                         }
-                        
                     }
                 }
             }
         }
-        
+
         window.clear();
 
         window.draw(texto);
@@ -128,14 +108,13 @@ int main()
         {
             window.draw(text);
         }
-        
+
         window.display();
     }
     if (seleccion == true)
     {
         window.close();
     }
-    
 
     return 0;
 }
