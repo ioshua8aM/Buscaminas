@@ -11,6 +11,8 @@ using namespace std;
 class Juego : public Campo
 {
 public:
+    int fin = 0;
+    bool resultadof = false;
     Juego(int Tam, int minas, int celdas) : Campo(Tam, minas, celdas)
     {
     }
@@ -44,23 +46,40 @@ public:
                 }
             }
             window.display();
-            if (ganar || perder)
+            
+                if (ganar || perder)
+                {
+                    resultado();
+                    resultadof = true;
+    
+                }
+    
+        }
+      
+           
+       
+    }
+    void resultado()
+        {
+            if(!resultadof)
             {
                 RenderWindow estado(VideoMode(200, 200), ganar ? "Ganaste" : "Perdiste");
+                while(estado.isOpen())
+                {
                 Event estado1;
                 while (estado.pollEvent(estado1))
                 {
-                    if (estado1.type == Event::Closed || estado1.type == Event::MouseButtonPressed)
+                    if (estado1.type == Event::Closed)
                     {
                         estado.close();
-                        window.close();
                     }
                 }
                 estado.clear();
                 estado.display();
+                }
             }
         }
-    }
+
     void manejarEventos(RenderWindow &window, int Tam, int celdas)
     {
 
@@ -89,7 +108,6 @@ private:
                 int celdasTotales = tablero.size() * tablero[0].size();
                 if (puntaje + minast == celdasTotales)
                 {
-                    cout << "Ganaste";
                     ganar = true;
                 }
             }
