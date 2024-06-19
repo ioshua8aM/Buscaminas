@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
-#include <Campo.hpp>
-#include <Dificultad.hpp>
+#include <CrearCampo.hpp>
+#include <SeleccionarDificultad.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -81,18 +81,18 @@ int main()
                     {
                         if (i == 0)
                         {
-                            Dificultad facil(10, 10, 60);
+                            SeleccionarDificultad facil(10, 10, 60);
                             seleccion = true;
 
                         }
                         if (i == 1)
                         {
-                            Dificultad intermedio(20, 40, 30);
+                            SeleccionarDificultad intermedio(20, 40, 30);
                             seleccion = true;
                         }
                         if (i == 2)
                         {
-                            Dificultad dificil(30, 100, 10);
+                            SeleccionarDificultad dificil(30, 100, 10);
                             seleccion = true;
                         }
                     }

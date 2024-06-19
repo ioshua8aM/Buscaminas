@@ -1,16 +1,16 @@
 @startuml buscaminas
 
-class Juego
+class Jugar
 {
-    + void Juego(int Tam, int minas, int celdas)
-    + void manejarEventos(RenderWindow &window, int Tam, int celdas)
-    + void run(int Tam, int minas, int celdas)
-    - int contarMinasCerca(int x, int y)
-    - void colocarBandera(int x, int y)
-    - void revelarCelda(int x, int y)
+    + Jugar(int Tam, int minas, int celdas)
+    + void ManejarEventos(RenderWindow &window, int Tam, int celdas)
+    + void Ejecutar(int Tam, int minas, int celdas)
+    - int ContarMinasCerca(int x, int y)
+    - void ColocarBandera(int x, int y)
+    - void RevelarCelda(int x, int y)
 
 }
-class Campo
+class CrearCampo
 {
     + bool ganar
     + bool perder
@@ -19,13 +19,13 @@ class Campo
     + Font fuente
     + vector<vector<Celda>> tablero
     + bool ventana
-    + void Campo(int Tam, int minas, int celdas)
-    - void incializarTablero(int Tam,int celdas)
-    - void colocarMinas
+    + CrearCampo(int Tam, int minas, int celdas)
+    - void IncializarTablero(int Tam,int celdas)
+    - void ColocarMinas
 }
-class Dificultad
+class SeleccinarDificultad
 {
-    + void Dificultad(int Tam, int minas, int celdas)
+    + SeleccinarDificultad(int Tam, int minas, int celdas)
     + bool seleccion
 }
 
@@ -41,6 +41,6 @@ class Celda
 Juego "1" *-- "*" Celda
 Campo "1" *-- "*" Celda
 Campo "1" --o "1" Juego
-Juego "1" *-- "1" Dificultad
-Campo "1" *-- "1" Dificultad
+Juego "1" *-- "1" SeleccinarDificultad
+Campo "1" *-- "1" SeleccinarDificultad
 @enduml

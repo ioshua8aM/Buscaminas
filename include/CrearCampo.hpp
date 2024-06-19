@@ -10,7 +10,7 @@
 using namespace sf;
 using namespace std;
 
-class Campo
+class CrearCampo
 {
 public:
     bool ganar = false, perder = false;
@@ -18,7 +18,7 @@ public:
     Font fuente;
     vector<vector<Celda>> tablero;
     bool ventana = true;
-    Campo(int Tam, int minas, int celdas)
+    CrearCampo(int Tam, int minas, int celdas)
     {
         srand(time(0));
         if (!fuente.loadFromFile("assets/fonts/arial.ttf"))
@@ -26,12 +26,12 @@ public:
 
             throw runtime_error("Error al cargar la fuente");
         }
-        inicializarTablero(Tam, celdas);
-        colocarMinas(minas, Tam);
+        InicializarTablero(Tam, celdas);
+        ColocarMinas(minas, Tam);
     }
 
 private:
-    void inicializarTablero(int Tam, int celdas)
+    void InicializarTablero(int Tam, int celdas)
     {
         tablero.resize(Tam, vector<Celda>(Tam));
         for (int i = 0; i < Tam; ++i)
@@ -48,7 +48,7 @@ private:
         }
     }
 
-    void colocarMinas(int minas, int Tam)
+    void ColocarMinas(int minas, int Tam)
     {
         minast = minas;
         int minasColocadas = 0;

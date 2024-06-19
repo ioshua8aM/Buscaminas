@@ -1,28 +1,27 @@
 #pragma once
-#include <SFML/Graphics.hpp>   
-#include <vector>   
-#include <Campo.hpp>
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include <CrearCampo.hpp>
 #include <iostream>
 #include <Celda.hpp>
+
 
 using namespace sf;
 using namespace std;
 
-class Juego : public Campo
+class Jugar : public CrearCampo
 {
 public:
-    int fin = 0;
+    int minast = 0;
     bool resultadof = false;
-    Juego(int Tam, int minas, int celdas) : Campo(Tam, minas, celdas)
-    {
-    }
+    Jugar(int Tam, int minas, int celdas) : CrearCampo(Tam, minas, celdas) {}
 
-    void run(int Tam, int minas, int celdas)
+    void Ejecutar(int Tam, int minas, int celdas)
     {
+        minast = minas;
         RenderWindow window(VideoMode(Tam * celdas, Tam * celdas), "Buscaminas SFML");
         while (window.isOpen())
         {
-
             Event evento;
             while (window.pollEvent(evento))
             {
@@ -33,7 +32,7 @@ public:
                 }
                 else if (evento.type == Event::MouseButtonPressed)
                 {
-                    manejarEventos(window, Tam, celdas);
+                    ManejarEventos(window, Tam, celdas);
                 }
             }
             window.clear();
@@ -46,26 +45,21 @@ public:
                 }
             }
             window.display();
-            
-                if (ganar || perder)
-                {
-                    resultado();
-                    resultadof = true;
-    
-                }
-    
+
+            if (ganar || perder)
+            {
+                resultado();
+                resultadof = true;
+            }
         }
-      
-           
-       
     }
     void resultado()
+    {
+        if (!resultadof)
         {
-            if(!resultadof)
+            RenderWindow estado(VideoMode(200, 200), ganar ? "Ganaste" : "Perdiste");
+            while (estado.isOpen())
             {
-                RenderWindow estado(VideoMode(200, 200), ganar ? "Ganaste" : "Perdiste");
-                while(estado.isOpen())
-                {
                 Event estado1;
                 while (estado.pollEvent(estado1))
                 {
@@ -76,28 +70,27 @@ public:
                 }
                 estado.clear();
                 estado.display();
-                }
             }
         }
+    }
 
-    void manejarEventos(RenderWindow &window, int Tam, int celdas)
+    void ManejarEventos(RenderWindow &window, int Tam, int celdas)
     {
-
         Vector2i pos = Mouse::getPosition(window);
         int x = pos.x / celdas;
         int y = pos.y / celdas;
         if (Mouse::isButtonPressed(Mouse::Left))
         {
-            revelarCelda(x, y);
+            RevelarCelda(x, y);
         }
         else if (Mouse::isButtonPressed(Mouse::Right))
         {
-            colocarBandera(x, y);
+            ColocarBandera(x, y);
         }
     }
 
 private:
-    void revelarCelda(int x, int y)
+    void RevelarCelda(int x, int y)
     {
         if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
         {
@@ -111,7 +104,7 @@ private:
                     ganar = true;
                 }
             }
-            int minasCerca = contarMinasCerca(x, y);
+            int minasCerca = ContarMinasCerca(x, y);
             tablero[x][y].minasCerca = minasCerca;
             if (tablero[x][y].tieneMina)
             {
@@ -140,7 +133,7 @@ private:
                         int ny = y + dy;
                         if (nx >= 0 && nx < tablero.size() && ny >= 0 && ny < tablero[0].size())
                         {
-                            revelarCelda(nx, ny);
+                            RevelarCelda(nx, ny);
                         }
                     }
                 }
@@ -148,7 +141,7 @@ private:
         }
     }
 
-    void colocarBandera(int x, int y)
+    void ColocarBandera(int x, int y)
     {
         if (x >= 0 && x < tablero.size() && y >= 0 && y < tablero[0].size() && !tablero[x][y].revelado)
         {
@@ -156,7 +149,7 @@ private:
         }
     }
 
-    int contarMinasCerca(int x, int y)
+    int ContarMinasCerca(int x, int y)
     {
         int cuenta = 0;
         for (int i = -1; i <= 1; i++)
