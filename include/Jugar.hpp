@@ -57,7 +57,13 @@ public:
     {
         if (!resultadof)
         {
-            RenderWindow estado(VideoMode(200, 200), ganar ? "Ganaste" : "Perdiste");
+            Text texto;
+            texto.setFont(fuente);
+            texto.setCharacterSize(24);
+            texto.setFillColor(Color::White);
+            texto.setPosition(100.f, 140.f);
+            texto.setString(ganar ? "Ganaste" : "Perdiste");
+            RenderWindow estado(VideoMode(300, 300), ganar ? "Ganaste" : "Perdiste");
             while (estado.isOpen())
             {
                 Event estado1;
@@ -69,6 +75,7 @@ public:
                     }
                 }
                 estado.clear();
+                estado.draw(texto);
                 estado.display();
             }
         }

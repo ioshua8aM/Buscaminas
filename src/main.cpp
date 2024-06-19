@@ -92,7 +92,7 @@ int main()
                         }
                         if (i == 2)
                         {
-                            SeleccionarDificultad dificil(30, 100, 10);
+                            SeleccionarDificultad dificil(30, 100, 20);
                             seleccion = true;
                         }
                     }

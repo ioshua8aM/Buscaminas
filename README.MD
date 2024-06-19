@@ -9,6 +9,12 @@ Si se descubre una casilla con una mina se pierde la partida.
 
 Se puede poner una marca en las casillas que el jugador piensa que hay minas para ayudar a descubrir las que están cerca.
 
+## **Instrucciones**
++ Cuando ejecutes el programa, seleccione una dificultad(para esto habrás tenido que recurrir a los pasos de descarga posteriores)
++ Click izquierdo, revela una celda
++ Click derecho, marca una bandera en una celda
++ Si revelas una mina, pierdes
+
 ## Caracteristicas
 
 - Incluye 3 dificultades (Fácil, intermedio y díficil)
@@ -28,11 +34,10 @@ Para utilizar este programa necesitas los siguientes requisitos:
 + Ejecuta el programa
 
 ## Capturas de pantalla
-+ ![Captura1]("C:\Users\user\Pictures\Screenshots\Captura1.png")
-+ ![Captura2]("C:\Users\user\Pictures\Screenshots\Captura2.png")
-+ ![Captura3]("C:\Users\user\Pictures\Screenshots\Captura3.png")
++ ![Captura1](assets/images/Captura1.png)
++ ![Captura2](assets/images/Captura2.png)
++ ![Captura3](assets/images/Captura3.png)
 
 ## Video de ejecución
-+ https://youtu.be/B8lb8bZ8ZbE
-```bash
-Give examples
++ https://youtu.be/rOAn_-aJxIM
+
